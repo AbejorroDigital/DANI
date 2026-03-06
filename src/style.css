@@ -1,0 +1,271 @@
+/* SOL-MEMO: Identidad Visual y Sistema de Color
+   Esta paleta define la atmósfera del "Scriptorium". 
+   Se priorizan tonos naturales y profundos para fomentar la concentración.
+*/
+
+:root {
+  --color-1: #406040;
+  --color-2: #408181;
+  --color-3: #a0c0a0;
+  --color-4: #80c0a0;
+  --color-5: #4d4f10;
+  --gradient-primary: linear-gradient(135deg, #406040, #408181);
+  
+  --bg-light: #f4f7f4;
+  --text-dark: #1a2e1a;
+  --font-main: 'Georgia', serif;
+  --font-ui: 'system-ui', -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.bg-primary { 
+  background-color: var(--bg-light); 
+}
+
+.text-primary { 
+  color: var(--color-1); 
+}
+
+.border-primary { 
+  border-color: var(--color-1); 
+}
+
+.app-header {
+  background: var(--gradient-primary);
+  color: white;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.app-header h1 {
+  font-family: var(--font-main);
+  font-size: 2.5rem;
+  font-weight: normal;
+  letter-spacing: 4px;
+  margin-bottom: 0.2rem;
+  color: white;
+}
+
+.app-header p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.scriptorium {
+  flex: 1;
+  padding: 1.5rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  gap: 2rem;
+}
+
+.editor-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(64, 96, 64, 0.08);
+  border: 1px solid var(--color-3);
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  color: var(--color-1);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-group input,
+.input-group textarea {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  padding: 0.8rem;
+  border: 1px solid var(--color-3);
+  border-radius: 8px;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+.input-group textarea {
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  resize: vertical;
+  line-height: 1.8;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  outline: none;
+  border-color: var(--color-2);
+  box-shadow: 0 0 0 3px rgba(64, 129, 129, 0.15);
+  background-color: white;
+}
+
+.status-indicator {
+  font-size: 0.75rem;
+  color: var(--color-4);
+  margin-top: 0.5rem;
+  text-align: right;
+  font-style: italic;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.status-indicator.visible {
+  opacity: 1;
+}
+
+.btn-primary {
+  background: var(--color-1);
+  color: white;
+  border: none;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s, transform 0.1s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+  background: var(--color-2);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.notes-section h2 {
+  font-family: var(--font-main);
+  color: var(--color-1);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--color-3);
+  padding-bottom: 0.5rem;
+}
+
+.notes-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .notes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+.note-card {
+  background: white;
+  border: 1px solid var(--color-3);
+  border-radius: 8px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.note-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(64, 96, 64, 0.1);
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--color-5);
+  font-weight: bold;
+}
+
+.note-content {
+  font-family: var(--font-main);
+  font-size: 1rem;
+  color: var(--text-dark);
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  background: var(--bg-light);
+  padding: 0.8rem;
+  border-radius: 6px;
+  border-left: 3px solid var(--color-3);
+}
+
+.note-footer {
+  margin-top: auto;
+  font-size: 0.8rem;
+  color: var(--color-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+.badge {
+  background: var(--color-3);
+  color: var(--text-dark);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.badge.notified {
+  background: var(--color-4);
+  color: white;
+}
+
+.btn-delete {
+  background: transparent;
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+  font-weight: bold;
+}
+
+.btn-delete:hover {
+  background: #ff6b6b;
+  color: white;
+}

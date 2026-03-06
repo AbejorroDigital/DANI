@@ -1,0 +1,5 @@
+{
+  "name": "DANI",
+  "description": "Herramienta de redacción consciente y gestión de recordatorios para mensajería.",
+  "requestFramePermissions": ["notifications"]
+}

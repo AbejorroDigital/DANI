@@ -1,0 +1,9 @@
+{
+  "name": "DANI - Scriptorium",
+  "short_name": "DANI",
+  "description": "Herramienta de redacción consciente y gestión de recordatorios.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f7f4",
+  "theme_color": "#406040"
+}

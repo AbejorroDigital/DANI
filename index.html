@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DANI - Scriptorium</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#406040">
+</head>
+<body class="bg-primary">
+  <header class="app-header">
+    <h1 class="text-primary">DANI</h1>
+    <p>Redacción Consciente</p>
+  </header>
+
+  <main class="scriptorium">
+    <section class="editor-section">
+      <form id="dani-form">
+        <div class="input-group">
+          <label for="destino">Destinatario / Grupo</label>
+          <input type="text" id="destino" name="destino" placeholder="Ej. Familia, Juan..." required>
+        </div>
+        
+        <div class="input-group">
+          <label for="fechaProgramada">Fecha y Hora de Envío</label>
+          <input type="datetime-local" id="fechaProgramada" name="fechaProgramada" required>
+        </div>
+
+        <div class="input-group">
+          <label for="contenido">Mensaje</label>
+          <textarea id="contenido" name="contenido" rows="8" placeholder="Escribe tu mensaje aquí..." required></textarea>
+          <span id="autosave-indicator" class="status-indicator">Guardado automático activo</span>
+        </div>
+
+        <button type="submit" class="btn-primary">Programar Mensaje</button>
+      </form>
+    </section>
+
+    <section class="notes-section">
+      <h2>Mensajes Programados</h2>
+      <div id="notes-list" class="notes-grid"></div>
+    </section>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
