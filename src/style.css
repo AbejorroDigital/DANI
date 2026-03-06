@@ -10,7 +10,7 @@
   --color-4: #80c0a0;
   --color-5: #4d4f10;
   --gradient-primary: linear-gradient(135deg, #406040, #408181);
-  
+
   --bg-light: #f4f7f4;
   --text-dark: #1a2e1a;
   --font-main: 'Georgia', serif;
@@ -33,16 +33,16 @@ body {
   min-height: 100vh;
 }
 
-.bg-primary { 
-  background-color: var(--bg-light); 
+.bg-primary {
+  background-color: var(--bg-light);
 }
 
-.text-primary { 
-  color: var(--color-1); 
+.text-primary {
+  color: var(--color-1);
 }
 
-.border-primary { 
-  border-color: var(--color-1); 
+.border-primary {
+  border-color: var(--color-1);
 }
 
 .app-header {
@@ -50,7 +50,7 @@ body {
   color: white;
   padding: 1.5rem 1rem;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .app-header h1 {
@@ -103,7 +103,7 @@ body {
 }
 
 .input-group input,
-.input-group textarea {
+.rich-textarea {
   font-family: var(--font-ui);
   font-size: 1rem;
   padding: 0.8rem;
@@ -114,15 +114,26 @@ body {
   transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
 }
 
-.input-group textarea {
+.rich-textarea {
   font-family: var(--font-main);
   font-size: 1.1rem;
-  resize: vertical;
+  min-height: 150px;
+  max-height: 300px;
+  overflow-y: auto;
   line-height: 1.8;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: none;
+}
+
+.rich-textarea:empty::before {
+  content: attr(placeholder);
+  color: #999;
+  font-style: italic;
 }
 
 .input-group input:focus,
-.input-group textarea:focus {
+.rich-textarea:focus {
   outline: none;
   border-color: var(--color-2);
   box-shadow: 0 0 0 3px rgba(64, 129, 129, 0.15);
@@ -195,7 +206,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -220,6 +231,7 @@ body {
   white-space: pre-wrap;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   background: var(--bg-light);
@@ -267,5 +279,85 @@ body {
 
 .btn-delete:hover {
   background: #ff6b6b;
+  color: white;
+}
+
+/* Editor Toolbar */
+.editor-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #e8eee8;
+  border: 1px solid var(--color-3);
+  border-bottom: none;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.tool-btn {
+  background: white;
+  border: 1px solid var(--color-3);
+  color: var(--color-1);
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.tool-btn:hover {
+  background: var(--bg-light);
+}
+
+.tool-btn:active,
+.tool-btn.active {
+  background: var(--color-2);
+  color: white;
+  transform: scale(0.95);
+}
+
+/* Emoji Picker */
+.emoji-container {
+  position: relative;
+  display: inline-block;
+  margin-left: auto;
+}
+
+.emoji-picker-wrapper {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.emoji-picker-wrapper.hidden {
+  display: none;
+}
+
+/* Botones Note Footer */
+.note-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-copy {
+  background: transparent;
+  border: 1px solid var(--color-2);
+  color: var(--color-2);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+  font-weight: bold;
+}
+
+.btn-copy:hover {
+  background: var(--color-2);
   color: white;
 }

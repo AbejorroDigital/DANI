@@ -3,7 +3,9 @@
  * Gestiona la interacción del DOM, el guardado automático y la comunicación con el Service Worker.
  */
 
-import { Database, DaniNote } from './db';
+import { DaniNote, Database } from './db';
+
+import 'emoji-picker-element';
 
 const db = new Database();
 
@@ -11,9 +13,13 @@ const db = new Database();
 const form = document.getElementById('dani-form') as HTMLFormElement;
 const destinoInput = document.getElementById('destino') as HTMLInputElement;
 const fechaInput = document.getElementById('fechaProgramada') as HTMLInputElement;
-const contenidoInput = document.getElementById('contenido') as HTMLTextAreaElement;
+const contenidoInput = document.getElementById('contenido') as HTMLDivElement; // Ahora es un div
 const autosaveIndicator = document.getElementById('autosave-indicator') as HTMLSpanElement;
 const notesList = document.getElementById('notes-list') as HTMLDivElement;
+const formatButtons = document.querySelectorAll('.tool-btn[data-command]');
+const emojiBtn = document.querySelector('.btn-emoji') as HTMLButtonElement;
+const emojiPickerWrapper = document.querySelector('.emoji-picker-wrapper') as HTMLDivElement;
+const emojiPicker = document.querySelector('emoji-picker') as any;
 
 // Estado de la aplicación
 let currentDraftId: string | null = null;
@@ -26,7 +32,7 @@ let autosaveTimeout: number | null = null;
  */
 async function init() {
   await db.init();
-  
+
   // RF-06: Algoritmo de Mantenimiento (Auto-purga)
   const purged = await db.purgeOldNotes();
   if (purged > 0) {
@@ -37,7 +43,7 @@ async function init() {
   setupEventListeners();
   requestNotificationPermission();
   registerServiceWorker();
-  
+
   // Verificación periódica de notificaciones pendientes (Fallback si la app está abierta)
   setInterval(checkDueNotes, 30000);
 }
@@ -51,12 +57,46 @@ function setupEventListeners() {
   destinoInput.addEventListener('input', handleAutosave);
   fechaInput.addEventListener('input', handleAutosave);
 
+  // Barra de herramientas de edición enriquecida
+  formatButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const command = btn.getAttribute('data-command');
+      if (command) {
+        document.execCommand(command, false, undefined);
+        contenidoInput.focus();
+      }
+    });
+  });
+
+  // Toggle del Emoji Picker
+  emojiBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    emojiPickerWrapper.classList.toggle('hidden');
+  });
+
+  // Insertar emoji
+  emojiPicker.addEventListener('emoji-click', (event: any) => {
+    const emoji = event.detail.unicode;
+    contenidoInput.focus();
+    // Insertamos como texto plano (funcionará si el cursor está en el contenteditable)
+    document.execCommand('insertText', false, emoji);
+    emojiPickerWrapper.classList.add('hidden');
+  });
+
+  // Cerrar emoji picker al hacer click fuera
+  document.addEventListener('click', (e) => {
+    if (!emojiPickerWrapper.contains(e.target as Node) && !emojiBtn.contains(e.target as Node)) {
+      emojiPickerWrapper.classList.add('hidden');
+    }
+  });
+
   // Manejo del envío final del formulario
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     await saveNote(true);
   });
-  
+
   // Escucha mensajes provenientes del Service Worker (ej. interacción con notificación)
   navigator.serviceWorker.addEventListener('message', async (event) => {
     if (event.data && event.data.type === 'MARK_NOTIFIED') {
@@ -84,12 +124,12 @@ function handleAutosave() {
   if (autosaveTimeout) {
     window.clearTimeout(autosaveTimeout);
   }
-  
+
   autosaveIndicator.textContent = 'Guardando...';
   autosaveIndicator.classList.add('visible');
 
   autosaveTimeout = window.setTimeout(async () => {
-    if (contenidoInput.value.trim() !== '' || destinoInput.value.trim() !== '') {
+    if (contenidoInput.innerHTML.trim() !== '' || destinoInput.value.trim() !== '') {
       await saveNote(false);
       autosaveIndicator.textContent = 'Borrador guardado';
       setTimeout(() => {
@@ -106,7 +146,8 @@ function handleAutosave() {
  * @param {boolean} isFinalSubmit - Indica si es un guardado final (submit) o un autosave (borrador).
  */
 async function saveNote(isFinalSubmit: boolean) {
-  const contenido = contenidoInput.value.trim();
+  // Ahora tomamos el innerHTML porque permite elementos de formato y salto de linea
+  const contenido = contenidoInput.innerHTML.trim();
   const destino = destinoInput.value.trim();
   const fechaProgramada = fechaInput.value;
 
@@ -117,7 +158,7 @@ async function saveNote(isFinalSubmit: boolean) {
   }
 
   const now = new Date().toISOString();
-  
+
   const note: DaniNote = {
     id: currentDraftId || crypto.randomUUID(),
     contenido,
@@ -133,9 +174,10 @@ async function saveNote(isFinalSubmit: boolean) {
   if (isFinalSubmit) {
     // Programa la notificación en el Service Worker
     scheduleNotification(note);
-    
+
     // Resetea el formulario y el estado del borrador
     form.reset();
+    contenidoInput.innerHTML = '';
     currentDraftId = null;
     await loadNotes();
     alert('Mensaje programado con éxito.');
@@ -157,10 +199,10 @@ async function loadNotes() {
   notes.forEach(note => {
     const card = document.createElement('div');
     card.className = 'note-card';
-    
+
     const dateObj = new Date(note.fechaProgramada);
-    const dateStr = dateObj.toLocaleString('es-ES', { 
-      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' 
+    const dateStr = dateObj.toLocaleString('es-ES', {
+      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
     });
 
     card.innerHTML = `
@@ -171,9 +213,31 @@ async function loadNotes() {
       <div class="note-content">${note.contenido}</div>
       <div class="note-footer">
         <span>🕒 ${dateStr}</span>
-        <button class="btn-delete" data-id="${note.id}">Eliminar</button>
+        <div class="note-actions">
+          <button class="btn-copy" data-id="${note.id}">Copiar</button>
+          <button class="btn-delete" data-id="${note.id}">Eliminar</button>
+        </div>
       </div>
     `;
+
+    // Event listener para copiar el contenido (texto renderizado, no el innerHTML tal cual para quitar tags innecesarios o copiarlos formatados si el destino lo acepta, pero default text plano)
+    const copyBtn = card.querySelector('.btn-copy');
+    copyBtn?.addEventListener('click', async () => {
+      // Creamos un div temporal para extraer el innerText y quitar etiquetas HTML para envíos a Whatsapp
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = note.contenido;
+      const textToCopy = tempDiv.innerText;
+
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copiado!';
+        setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
+      } catch (err) {
+        console.error('Error al copiar: ', err);
+        alert('Hubo un error al copiar al portapapeles.');
+      }
+    });
 
     // Event listener para eliminar la nota manualmente
     const deleteBtn = card.querySelector('.btn-delete');
@@ -246,7 +310,7 @@ async function checkDueNotes() {
             data: { noteId: note.id, contenido: note.contenido },
             requireInteraction: true
           });
-          
+
           await db.updateNote(note.id, { notificado: true });
           await loadNotes();
         }

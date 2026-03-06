@@ -29,7 +29,22 @@
 
         <div class="input-group">
           <label for="contenido">Mensaje</label>
-          <textarea id="contenido" name="contenido" rows="8" placeholder="Escribe tu mensaje aquí..." required></textarea>
+          
+          <div class="editor-toolbar">
+            <button type="button" class="tool-btn" data-command="bold" title="Negrita"><b>B</b></button>
+            <button type="button" class="tool-btn" data-command="italic" title="Cursiva"><i>I</i></button>
+            <button type="button" class="tool-btn" data-command="underline" title="Subrayado"><u>U</u></button>
+            <button type="button" class="tool-btn" data-command="insertUnorderedList" title="Viñetas">• Lista</button>
+            
+            <div class="emoji-container">
+              <button type="button" class="tool-btn btn-emoji" title="Insertar Emoji">😀</button>
+              <div class="emoji-picker-wrapper hidden">
+                <emoji-picker></emoji-picker>
+              </div>
+            </div>
+          </div>
+          
+          <div id="contenido" class="rich-textarea" contenteditable="true" placeholder="Escribe tu mensaje aquí..." required></div>
           <span id="autosave-indicator" class="status-indicator">Guardado automático activo</span>
         </div>
 

@@ -14,6 +14,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "emoji-picker-element": "^1.29.1",
     "vite": "^6.2.0"
   },
   "devDependencies": {
